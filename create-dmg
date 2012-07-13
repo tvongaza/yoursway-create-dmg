@@ -106,7 +106,7 @@ test -z "$2" && {
 
 DMG_PATH="$1"
 DMG_DIRNAME="$(dirname "$DMG_PATH")"
-DMG_DIR="$(cd $DMG_DIRNAME > /dev/null; pwd)"
+DMG_DIR="$(cd "$DMG_DIRNAME" > /dev/null; pwd)"
 DMG_NAME="$(basename "$DMG_PATH")"
 DMG_TEMP_NAME="$DMG_DIR/rw.${DMG_NAME}"
 SRC_FOLDER="$(cd "$2" > /dev/null; pwd)"
@@ -119,15 +119,15 @@ test -d "$AUX_PATH" || {
   exit 1
 }
 
-if [ -f "$SRC_FOLDER/.DS_Store" ]; then
+if [ -f "$SRC_FOLDER"/.DS_Store ]; then
     echo "Deleting any .DS_Store in source folder"
-    rm "$SRC_FOLDER/.DS_Store"
+    rm "$SRC_FOLDER"/.DS_Store
 fi
 
 # Create the image
 echo "Creating disk image..."
 test -f "${DMG_TEMP_NAME}" && rm -f "${DMG_TEMP_NAME}"
-ACTUAL_SIZE=`du -sm "$SRC_FOLDER" | sed -e 's/	.*//g'`
+ACTUAL_SIZE=`du -sm "$SRC_FOLDER" | sed -e 's/  .*//g'`
 DISK_IMAGE_SIZE=$(expr $ACTUAL_SIZE + 20)
 hdiutil create -srcfolder "$SRC_FOLDER" -volname "${VOLUME_NAME}" -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW -size ${DISK_IMAGE_SIZE}m "${DMG_TEMP_NAME}"
 
